@@ -7,6 +7,7 @@ INJECTED from E:\TKProj\BaseProject\baseproject\app\src\main\AndroidManifest.xml
 MERGED from [androidx.databinding:databinding-adapters:8.6.0] C:\Users\luong\.gradle\caches\8.9\transforms\4a6f697f47d9427286077227e42ca3bb\transformed\databinding-adapters-8.6.0\AndroidManifest.xml:2:1-7:12
 MERGED from [androidx.databinding:databinding-ktx:8.6.0] C:\Users\luong\.gradle\caches\8.9\transforms\6577107cb1dad7b9f1338540ac5fa8b2\transformed\databinding-ktx-8.6.0\AndroidManifest.xml:2:1-7:12
 MERGED from [androidx.databinding:databinding-runtime:8.6.0] C:\Users\luong\.gradle\caches\8.9\transforms\6753f002bf6f5571b720d31d1bd29eba\transformed\databinding-runtime-8.6.0\AndroidManifest.xml:2:1-7:12
+MERGED from [io.github.huongltt1113:mylibrary:1.0.7] C:\Users\luong\.gradle\caches\8.9\transforms\57e918a0b70a62e558c82101114cd747\transformed\mylibrary-1.0.7\AndroidManifest.xml:2:1-7:12
 MERGED from [androidx.navigation:navigation-common:2.8.1] C:\Users\luong\.gradle\caches\8.9\transforms\886e83e050316ec0a8f8dd2018cad78f\transformed\navigation-common-2.8.1\AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.navigation:navigation-common-ktx:2.8.1] C:\Users\luong\.gradle\caches\8.9\transforms\e887b567d2ecc8a18132d4c199dc8239\transformed\navigation-common-ktx-2.8.1\AndroidManifest.xml:2:1-7:12
 MERGED from [androidx.navigation:navigation-runtime:2.8.1] C:\Users\luong\.gradle\caches\8.9\transforms\60580b9e100ffef5a26fa1911ed96369\transformed\navigation-runtime-2.8.1\AndroidManifest.xml:17:1-22:12
@@ -814,6 +815,8 @@ MERGED from [androidx.databinding:databinding-ktx:8.6.0] C:\Users\luong\.gradle\
 MERGED from [androidx.databinding:databinding-ktx:8.6.0] C:\Users\luong\.gradle\caches\8.9\transforms\6577107cb1dad7b9f1338540ac5fa8b2\transformed\databinding-ktx-8.6.0\AndroidManifest.xml:5:5-44
 MERGED from [androidx.databinding:databinding-runtime:8.6.0] C:\Users\luong\.gradle\caches\8.9\transforms\6753f002bf6f5571b720d31d1bd29eba\transformed\databinding-runtime-8.6.0\AndroidManifest.xml:5:5-44
 MERGED from [androidx.databinding:databinding-runtime:8.6.0] C:\Users\luong\.gradle\caches\8.9\transforms\6753f002bf6f5571b720d31d1bd29eba\transformed\databinding-runtime-8.6.0\AndroidManifest.xml:5:5-44
+MERGED from [io.github.huongltt1113:mylibrary:1.0.7] C:\Users\luong\.gradle\caches\8.9\transforms\57e918a0b70a62e558c82101114cd747\transformed\mylibrary-1.0.7\AndroidManifest.xml:5:5-44
+MERGED from [io.github.huongltt1113:mylibrary:1.0.7] C:\Users\luong\.gradle\caches\8.9\transforms\57e918a0b70a62e558c82101114cd747\transformed\mylibrary-1.0.7\AndroidManifest.xml:5:5-44
 MERGED from [androidx.navigation:navigation-common:2.8.1] C:\Users\luong\.gradle\caches\8.9\transforms\886e83e050316ec0a8f8dd2018cad78f\transformed\navigation-common-2.8.1\AndroidManifest.xml:20:5-44
 MERGED from [androidx.navigation:navigation-common:2.8.1] C:\Users\luong\.gradle\caches\8.9\transforms\886e83e050316ec0a8f8dd2018cad78f\transformed\navigation-common-2.8.1\AndroidManifest.xml:20:5-44
 MERGED from [androidx.navigation:navigation-common-ktx:2.8.1] C:\Users\luong\.gradle\caches\8.9\transforms\e887b567d2ecc8a18132d4c199dc8239\transformed\navigation-common-ktx-2.8.1\AndroidManifest.xml:5:5-44

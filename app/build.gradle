@@ -172,4 +172,6 @@ dependencies {
     implementation 'androidx.multidex:multidex:2.0.1'
 
     implementation 'io.github.ShawnLin013:number-picker:2.4.13'
+
+    implementation("io.github.huongltt1113:mylibrary:1.0.7")
 }

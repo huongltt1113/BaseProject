@@ -17,7 +17,9 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
-        maven { url "https://jitpack.io" }
+        maven {
+            url = uri("https://jitpack.io")
+        }
         maven {
             url = uri("https://artifact.bytedance.com/repository/pangle/")
         }
@@ -32,3 +34,5 @@ dependencyResolutionManagement {
 
 rootProject.name = "BaseProject"
 include ':app'
+include ':he'
+include ':baseprojectlib'
