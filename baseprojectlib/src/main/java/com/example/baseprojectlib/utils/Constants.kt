@@ -5,7 +5,7 @@ object Constants {
     const val APPLICATION_ID: String = "com.dev.baseproject"
     const val BUILD_TYPE: String = "debug"
     const val VERSION_CODE: Int = 1
-    const val VERSION_NAME: String = "1.0.1"
+    const val VERSION_NAME: String = "1.0.2"
     val CONTACT_PERMISSION = arrayOf(
         android.Manifest.permission.WRITE_CONTACTS,
         android.Manifest.permission.READ_CONTACTS
