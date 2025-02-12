@@ -1,0 +1,55 @@
+package com.example.baseprojectlib.di
+
+import android.annotation.SuppressLint
+import android.content.Context
+import android.os.Build
+import android.provider.Settings
+import com.example.baseprojectlib.ads.GoogleMobileAdsConsentManager
+import com.example.baseprojectlib.data.DatabaseInfo
+import com.example.baseprojectlib.local.MobileIdInfo
+import com.example.baseprojectlib.local.PreferenceInfo
+import dagger.Module
+import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
+import dagger.hilt.components.SingletonComponent
+import javax.inject.Named
+import javax.inject.Singleton
+
+@Module
+@InstallIn(SingletonComponent::class)
+class AppModule {
+
+    @Singleton
+    @Provides
+    @PreferenceInfo
+    fun preferencesName(): String {
+        return "sharedPreferences"
+    }
+
+    @Singleton
+    @Provides
+    @DatabaseInfo
+    fun databaseName(): String {
+        return "clicker"
+    }
+
+    @SuppressLint("HardwareIds")
+    @Singleton
+    @Provides
+    @MobileIdInfo
+    fun providerMobileId(@ApplicationContext context: Context) = Settings.Secure.getString(
+        context.contentResolver,
+        Settings.Secure.ANDROID_ID
+    ) + "_sdk" + Build.VERSION.SDK_INT
+
+    @Singleton
+    @Provides
+    @Named("AppId")
+    fun providerAppId() = "base_project"
+
+    @Singleton
+    @Provides
+    fun providerCMP(@ApplicationContext context: Context) = GoogleMobileAdsConsentManager(context)
+
+}

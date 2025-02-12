@@ -1,0 +1,271 @@
+package com.example.baseprojectlib.ui.component.findphone
+
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
+import android.os.Bundle
+import android.os.PowerManager
+import android.util.Log
+import android.view.WindowManager
+import android.view.animation.AlphaAnimation
+import android.view.animation.Animation
+import android.view.animation.LinearInterpolator
+import android.view.animation.RotateAnimation
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import io.github.huongltt1113.R
+import com.example.baseprojectlib.services.ClapDetectionService
+import com.example.baseprojectlib.services.MotionDetectionService
+import com.example.baseprojectlib.services.PocketDetectionService
+import com.example.baseprojectlib.services.VoiceDetectionService
+import com.example.baseprojectlib.ui.MainViewModel
+import com.example.baseprojectlib.ui.base.BaseActivityBinding
+import com.example.baseprojectlib.utils.Constants
+import dagger.hilt.android.AndroidEntryPoint
+import io.github.huongltt1113.databinding.ActivityPhoneFoundBinding
+
+
+@AndroidEntryPoint
+class PhoneFoundActivity: BaseActivityBinding<ActivityPhoneFoundBinding, MainViewModel>()  {
+    private var animation: Animation? = null
+    private var animation2: Animation? = null
+    private var animationRotate: Animation? = null
+
+    private val durationCompleteReceiver: BroadcastReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+
+        }
+    }
+    private val playbackStatusReceiver: BroadcastReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+
+        }
+    }
+    override fun getContentViewId(): Int {
+        return R.layout.activity_phone_found
+    }
+
+    private var wakeLock: PowerManager.WakeLock? = null
+
+    private fun acquireWakeLock() {
+        val powerManager = getSystemService(POWER_SERVICE) as PowerManager
+        wakeLock = powerManager.newWakeLock(
+            PowerManager.SCREEN_BRIGHT_WAKE_LOCK or
+                    PowerManager.ACQUIRE_CAUSES_WAKEUP, "PhoneFound:WakeLock"
+        )
+        wakeLock!!.acquire(1000*60)
+    }
+
+    private fun releaseWakeLock() {
+        if (wakeLock != null && wakeLock!!.isHeld) {
+            wakeLock!!.release()
+        }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        acquireWakeLock()
+
+        Log.w("PhoneFoundActivity", "onCreate")
+
+        LocalBroadcastManager.getInstance(this).registerReceiver(
+            this.playbackStatusReceiver,
+            IntentFilter("com.example.baseprojectlib.services.PLAYBACK_STATUS")
+        )
+        if (MotionDetectionService.isServiceRunning) {
+            LocalBroadcastManager.getInstance(this).registerReceiver(
+                this.durationCompleteReceiver,
+                IntentFilter(Constants.INTENT_DONT_TOUCH_DURATION_COMPLETE)
+            )
+        } else if (ClapDetectionService.isservicerunning) {
+            LocalBroadcastManager.getInstance(this).registerReceiver(
+                this.durationCompleteReceiver,
+                IntentFilter(Constants.INTENT_CLAP_DURATION_COMPLETE)
+            )
+        } else if (VoiceDetectionService.isservicerunning) {
+            LocalBroadcastManager.getInstance(this).registerReceiver(
+                this.durationCompleteReceiver,
+                IntentFilter(Constants.INTENT_VOICE_DURATION_COMPLETE)
+            )
+        } else if (PocketDetectionService.isServiceRunning) {
+            LocalBroadcastManager.getInstance(this).registerReceiver(
+                this.durationCompleteReceiver,
+                IntentFilter(Constants.INTENT_POCKET_DURATION_COMPLETE)
+            )
+        }
+
+        val source = intent.getStringExtra("SOURCE")
+        when (source) {
+            "FROM_HOME" -> {
+                // Logic khi điều hướng từ HomeFragment
+//                localStorage.isPhoneFoundActivityActive = false
+
+            }
+
+            "FROM_NOTIFICATION" -> {
+                // Logic khi điều hướng từ thông báo
+                localStorage.isPhoneFoundActivityActiveFromNoti = false
+            }
+
+            else -> {
+                // Logic mặc định nếu không xác định được nguồn
+
+            }
+        }
+
+        animation = AlphaAnimation(0.3f, 1.0f)
+        animation?.duration = 800
+        animation?.startOffset = 80
+        animation?.repeatMode = Animation.REVERSE
+        animation?.repeatCount = Animation.INFINITE
+
+        animation2 = AlphaAnimation(0.3f, 1.0f)
+        animation2?.duration = 1000
+        animation2?.startOffset = 40
+        animation2?.repeatMode = Animation.REVERSE
+        animation2?.repeatCount = Animation.INFINITE
+
+        animationRotate = RotateAnimation(
+            0f,
+            180f,
+            Animation.RELATIVE_TO_SELF,
+            0.5f,
+            Animation.RELATIVE_TO_SELF,
+            0.5f
+        )
+        animationRotate?.duration = 1000
+        animationRotate?.interpolator = LinearInterpolator()
+
+        dataBinding.apply {
+            ivShadowTop.startAnimation(animation)
+            ivShadowBottom.startAnimation(animation2)
+            ivBell.startAnimation(animationRotate)
+        }
+
+        if (MotionDetectionService.isServiceRunning) {
+            dataBinding.description.text = getString(R.string.phone_found_motion_detected)
+        } else if (ClapDetectionService.isservicerunning) {
+            dataBinding.description.text = getString(R.string.phone_found_clap_detected)
+        } else if (VoiceDetectionService.isservicerunning) {
+            dataBinding.description.text = getString(R.string.phone_found_voice_detected)
+        } else if (PocketDetectionService.isServiceRunning) {
+            dataBinding.description.text = getString(R.string.phone_found_pocket_detected)
+        }
+
+        dataBinding.btnCloseService.setOnClickListener {
+            localStorage.isPhoneFoundActivityActive = false
+            localStorage.isClapServiceDetected = false
+            localStorage.isDontTouchServiceDetected = false
+            localStorage.isPocketServiceDetected = false
+            localStorage.isVoiceServiceDetected = false
+            if (MotionDetectionService.isServiceRunning) {
+                LocalBroadcastManager.getInstance(this).sendBroadcast(Intent(Constants.INTENT_DONT_TOUCH_STOP_MUSIC))
+            } else if (ClapDetectionService.isservicerunning) {
+                LocalBroadcastManager.getInstance(this).sendBroadcast(Intent(Constants.INTENT_CLAP_STOP_MUSIC))
+            } else if (VoiceDetectionService.isservicerunning) {
+                LocalBroadcastManager.getInstance(this).sendBroadcast(Intent(Constants.INTENT_VOICE_STOP_MUSIC))
+            } else if (PocketDetectionService.isServiceRunning) {
+                LocalBroadcastManager.getInstance(this).sendBroadcast(Intent(Constants.INTENT_POCKET_STOP_MUSIC))
+            }
+            finish()
+        }
+
+        dataBinding.btnCloseService2.setOnClickListener {
+            when {
+                MotionDetectionService.isServiceRunning ->
+                    stopService(Intent(this, MotionDetectionService::class.java))
+
+                ClapDetectionService.isservicerunning ->
+                    stopService(Intent(this, ClapDetectionService::class.java))
+
+                VoiceDetectionService.isservicerunning ->
+                    stopService(Intent(this, VoiceDetectionService::class.java))
+
+                PocketDetectionService.isServiceRunning ->
+                    stopService(Intent(this, PocketDetectionService::class.java))
+            }
+            localStorage.isPhoneFoundActivityActive = false
+            localStorage.isClapServiceDetected = false
+            localStorage.isDontTouchServiceDetected = false
+            localStorage.isPocketServiceDetected = false
+            localStorage.isVoiceServiceDetected = false
+            if (MotionDetectionService.isServiceRunning) {
+                LocalBroadcastManager.getInstance(this).sendBroadcast(Intent(Constants.INTENT_DONT_TOUCH_STOP_MUSIC))
+            } else if (ClapDetectionService.isservicerunning) {
+                LocalBroadcastManager.getInstance(this).sendBroadcast(Intent(Constants.INTENT_CLAP_STOP_MUSIC))
+            } else if (VoiceDetectionService.isservicerunning) {
+                LocalBroadcastManager.getInstance(this).sendBroadcast(Intent(Constants.INTENT_VOICE_STOP_MUSIC))
+            } else if (PocketDetectionService.isServiceRunning) {
+                LocalBroadcastManager.getInstance(this).sendBroadcast(Intent(Constants.INTENT_POCKET_STOP_MUSIC))
+            }
+            finish()
+        }
+    }
+
+    override fun initializeViews() {
+        animation = AlphaAnimation(0.3f, 1.0f)
+        animation?.duration = 800
+        animation?.startOffset = 80
+        animation?.repeatMode = Animation.REVERSE
+        animation?.repeatCount = Animation.INFINITE
+
+        animation2 = AlphaAnimation(0.3f, 1.0f)
+        animation2?.duration = 1000
+        animation2?.startOffset = 40
+        animation2?.repeatMode = Animation.REVERSE
+        animation2?.repeatCount = Animation.INFINITE
+
+        animationRotate = RotateAnimation(
+            0f,
+            180f,
+            Animation.RELATIVE_TO_SELF,
+            0.5f,
+            Animation.RELATIVE_TO_SELF,
+            0.5f
+        )
+        animationRotate?.duration = 1000
+        animationRotate?.interpolator = LinearInterpolator()
+
+        dataBinding.apply {
+            ivShadowTop.startAnimation(animation)
+            ivShadowBottom.startAnimation(animation2)
+            ivBell.startAnimation(animationRotate)
+        }
+
+    }
+
+    override fun registerListeners() {
+
+    }
+
+    override fun initializeData() {
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        releaseWakeLock()
+        dataBinding.apply {
+            ivShadowTop.clearAnimation()
+            ivShadowBottom.clearAnimation()
+            ivBell.clearAnimation()
+        }
+        try {
+            LocalBroadcastManager.getInstance(this)
+                .unregisterReceiver(this.playbackStatusReceiver)
+        } catch (e: IllegalArgumentException) {
+            e.printStackTrace()
+        }
+        try {
+            LocalBroadcastManager.getInstance(this)
+                .unregisterReceiver(this.durationCompleteReceiver)
+        } catch (e2: IllegalArgumentException) {
+            e2.printStackTrace()
+        }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        localStorage.lastTimeExitApp = System.currentTimeMillis()
+    }
+}

@@ -36,3 +36,4 @@ rootProject.name = "BaseProject"
 include ':app'
 include ':he'
 include ':baseprojectlib'
+include ':myapp'

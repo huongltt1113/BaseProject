@@ -1,0 +1,63 @@
+package com.example.baseprojectlib.ui.component.home.fragment
+
+import android.view.View
+import androidx.activity.OnBackPressedCallback
+import io.github.huongltt1113.R
+import io.github.huongltt1113.databinding.FragmentCreatePasscodeBinding
+import com.example.baseprojectlib.ui.base.BaseFragmentBinding
+import com.example.baseprojectlib.utils.AppConfig
+import com.example.baseprojectlib.utils.Constants.GO_TO_RECORD_PASSCODE_AGAIN
+import com.example.baseprojectlib.utils.Constants.GO_TO_RECORD_PASSCODE_FIRST
+import com.example.baseprojectlib.utils.Constants.GO_TO_TEXT_TO_VOICE_AGAIN
+import com.example.baseprojectlib.utils.Constants.GO_TO_TEXT_TO_VOICE_FIRST
+import dagger.hilt.android.AndroidEntryPoint
+
+@AndroidEntryPoint
+class CreatePasscodeFragment : BaseFragmentBinding<FragmentCreatePasscodeBinding>() {
+    override fun getContentViewId() = R.layout.fragment_create_passcode
+
+    override fun initializeViews() {
+        if (localStorage.voicePasscode.isEmpty()){
+            dataBinding.llPasscode.visibility = View.GONE
+            dataBinding.tvCurrentPasscode.text = ""
+            dataBinding.heading.text = context?.resources?.getString(R.string.create_passcode)
+        } else {
+            dataBinding.llPasscode.visibility = View.VISIBLE
+            dataBinding.tvCurrentPasscode.text = localStorage.voicePasscode
+            dataBinding.heading.text = context?.resources?.getString(R.string.change_passcode)
+        }
+    }
+
+    override fun registerListeners() {
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                findNavControllerSafety()?.popBackStack()
+            }
+        })
+        dataBinding.recordpassword.setOnClickListener {
+           if(localStorage.goToRecordPasscode){
+               AppConfig.logEventTracking(GO_TO_RECORD_PASSCODE_FIRST)
+               localStorage.goToRecordPasscode = false
+           }else{
+               AppConfig.logEventTracking(GO_TO_RECORD_PASSCODE_AGAIN)
+           }
+           findNavControllerSafety()?.navigate(R.id.action_createPasscodeFragment_to_recordPasscodeFragment)
+       }
+        dataBinding.recordtext.setOnClickListener {
+            if(localStorage.goToRecordPasscode){
+                AppConfig.logEventTracking(GO_TO_TEXT_TO_VOICE_FIRST)
+                localStorage.goToRecordPasscode = false
+            }else{
+                AppConfig.logEventTracking(GO_TO_TEXT_TO_VOICE_AGAIN)
+            }
+            findNavControllerSafety()?.navigate(R.id.action_createPasscodeFragment_to_textToVoiceFragment)
+        }
+
+        dataBinding.btnBack.setOnClickListener {
+            findNavControllerSafety()?.navigateUp()
+        }
+}
+    override fun initializeData() {
+
+    }
+}
